@@ -1,0 +1,42 @@
+- name: Check for remotes
+  command: "git remote"
+  args:
+    warn: false
+  register: has_remotes
+
+- name: Fetch existing tags
+  command: "git fetch --tags"
+  args:
+    warn: false
+  when: has_remotes.stdout.strip()
+
+- name: Check for existing tag
+  command: "git rev-parse --verify -q --short {{git_tag}}"
+  ignore_errors: True
+  args:
+    warn: false
+  register: existing_tag
+
+- name: Check current HEAD
+  command: "git rev-parse --verify -q --short HEAD"
+  args:
+    warn: false
+  register: current_head
+
+- name: Existing tag clashes
+  debug:
+    msg: "current head: {{current_head.stdout}}, existing tag: {{existing_tag.stdout}}"
+  failed_when: True
+  when: existing_tag.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip()
+
+- name: Create Git tag
+  command: "git tag {{git_tag}}"
+  args:
+    warn: false
+  when: existing_tag.stdout.strip() != current_head.stdout.strip()
+
+- name: Push tags
+  command: "git push --tags"
+  args:
+    warn: false
+  when: has_remotes.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip()

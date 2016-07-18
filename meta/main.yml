@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Chris Withers
+  description: your description
+  license: MIT
+  min_ansible_version: 1.9
+  galaxy_tags: ['git']
+
+dependencies: []
