@@ -2,12 +2,14 @@
   command: "git remote"
   args:
     warn: false
+    chdir: "{{repo_location}}"
   register: has_remotes
 
 - name: Fetch existing tags
   command: "git fetch --tags"
   args:
     warn: false
+    chdir: "{{repo_location}}"
   when: has_remotes.stdout.strip()
 
 - name: Check for existing tag
@@ -15,12 +17,14 @@
   ignore_errors: True
   args:
     warn: false
+    chdir: "{{repo_location}}"
   register: existing_tag
 
 - name: Check current HEAD
   command: "git rev-parse --verify -q --short HEAD"
   args:
     warn: false
+    chdir: "{{repo_location}}"
   register: current_head
 
 - name: Existing tag clashes
@@ -33,10 +37,12 @@
   command: "git tag {{git_tag}}"
   args:
     warn: false
+    chdir: "{{repo_location}}"
   when: existing_tag.stdout.strip() != current_head.stdout.strip()
 
 - name: Push tags
   command: "git push --tags"
   args:
     warn: false
+    chdir: "{{repo_location}}"
   when: has_remotes.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip()

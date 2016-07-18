@@ -42,6 +42,26 @@ class TestRoleNoRemote(GitHelper, TestCase):
         })
 
 
+class TestFromOtherDirectory(GitHelper, TestCase):
+
+    def setUp(self):
+        super(TestFromOtherDirectory, self).setUp()
+        self.ansible = AnsibleHelper(self.dir)
+        self.ansible.install_role(role_path, 'create_tag')
+
+    def test_specific_repo_location(self):
+        self.make_repo_with_content(self.repo)
+        self.ansible.run_playbook(yml="""
+            - hosts: localhost
+              vars:
+                git_tag: test_tag
+                repo_location: ../local
+              roles:
+                - create_tag
+        """)
+        self.check_tags(expected={'test_tag': self.git_rev_parse('HEAD')})
+
+
 class TestRoleWithRemote(GitHelper, TestCase):
 
     def setUp(self):
