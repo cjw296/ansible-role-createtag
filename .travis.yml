@@ -1,0 +1,30 @@
+---
+language: python
+python: "2.7"
+
+# Use the new container infrastructure
+sudo: false
+
+env:
+  - ANSIBLE_VERSION=1.9
+  - ANSIBLE_VERSION=2.0
+  - ANSIBLE_VERSION=2.1
+
+addons:
+  apt:
+    packages:
+    - python-pip
+
+install:
+  # Install ansible and test dependencies
+  - pip install ansible==$ANSIBLE_VERSION
+  - pip install -r tests/requirements.txt
+
+  # Check ansible version
+  - ansible --version
+
+script:
+  - nosetests
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
