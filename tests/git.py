@@ -1,5 +1,5 @@
 import os
-from subprocess import check_output, STDOUT
+from subprocess import check_output, STDOUT, CalledProcessError
 
 from testfixtures import TempDirectory, compare
 
@@ -14,7 +14,10 @@ class GitHelper(object):
 
     def git(self, command, repo=None):
         repo_path = self.dir.getpath(repo or self.repo)
-        return check_output(['git'] + command.split(), cwd=repo_path, stderr=STDOUT)
+        try:
+            return check_output(['git'] + command.split(), cwd=repo_path, stderr=STDOUT)
+        except CalledProcessError as e:
+            self.fail(e.output)
 
     def git_rev_parse(self, label, repo=None):
         return self.git('rev-parse --verify -q --short '+label, repo).strip()

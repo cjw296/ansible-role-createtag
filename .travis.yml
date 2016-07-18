@@ -24,7 +24,7 @@ install:
   - ansible --version
 
 script:
-  - nosetests --no-capture --no-logcapture
+  - nosetests --nocapture
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
