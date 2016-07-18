@@ -23,6 +23,11 @@ install:
   # Check ansible version
   - ansible --version
 
+  # setup git
+  - git config --global user.email "test@example.com"
+  - git config --global user.name "Test User"
+  - git config --global push.default simple
+
 script:
   - nosetests --nocapture
 
