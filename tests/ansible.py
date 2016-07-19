@@ -31,7 +31,7 @@ class AnsibleHelper(object):
         os.symlink(path, self.dir.getpath([self.workspace, name]))
 
     def run_playbook(self, yml, should_fail=False):
-        playbook_path = self.dir.write('playbook.yml', yml)
+        playbook_path = self.dir.write([self.workspace, 'playbook.yml'], yml)
         inventory_path = os.path.join(test_dir, 'inventory')
         output = TemporaryFile()
         try:
