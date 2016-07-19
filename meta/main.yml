@@ -1,6 +1,6 @@
 galaxy_info:
   author: Chris Withers
-  description: your description
+  description: A role to create a git tag in a repo and push it to any remotes.
   license: MIT
   min_ansible_version: 1.9
   galaxy_tags: ['git']
