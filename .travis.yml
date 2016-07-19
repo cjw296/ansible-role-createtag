@@ -29,7 +29,7 @@ install:
   - git config --global push.default simple
 
 script:
-  - nosetests --nocapture
+  - nosetests -vv --nocapture
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

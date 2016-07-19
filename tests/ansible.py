@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 from subprocess import check_call, CalledProcessError
 from tempfile import TemporaryFile
@@ -34,7 +36,7 @@ class AnsibleHelper(object):
         output = TemporaryFile()
         try:
             check_call(
-                ['ansible-playbook', '-i', inventory_path, playbook_path],
+                ['ansible-playbook', '-vv', '-i', inventory_path, playbook_path],
                 cwd=self.workspace_path,
                 stdout=output
             )
@@ -43,5 +45,6 @@ class AnsibleHelper(object):
             if should_fail:
                 return output.read()
             else:
+                print('cwd:', self.workspace_path)
                 print(output.read())
                 raise
