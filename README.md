@@ -29,7 +29,7 @@ defined somewhere, such as in your inventory file:
       vars:
         git_tag: "{{env}}-{{ansible_date_time.date}}"
       roles:
-        - create_tag
+        - cjw296.createtag
 
 License
 -------
