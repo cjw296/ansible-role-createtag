@@ -20,6 +20,15 @@
     chdir: "{{repo_location}}"
   register: existing_tag
 
+- name: Check for tag matching pattern
+  command: "git describe --match \"{{ skip_if_tag_matching }}\" --tags --exact-match"
+  args:
+    warn: false
+    chdir: "{{repo_location}}"
+  when: skip_if_tag_matching is defined
+  ignore_errors: True
+  register: matching_tags
+
 - name: Check current HEAD
   command: "git rev-parse --verify -q --short HEAD"
   args:
@@ -38,7 +47,7 @@
   args:
     warn: false
     chdir: "{{repo_location}}"
-  when: existing_tag.stdout.strip() != current_head.stdout.strip()
+  when: existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines)
 
 - name: Push tags
   command: "git push --tags"

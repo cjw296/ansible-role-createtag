@@ -84,7 +84,6 @@ class TestRoleWithRemote(GitHelper, TestCase):
         self.check_tags(expected={'test_tag': rev})
         self.check_tags(expected={'test_tag': rev}, repo='upstream/')
 
-
     def test_duplicate_tag_create_same_rev(self):
         self.git('tag test_tag', 'upstream/')
         self.ansible.run_playbook(yml="""
@@ -120,3 +119,37 @@ class TestRoleWithRemote(GitHelper, TestCase):
             ) in output, output)
         self.check_tags(expected={'test_tag': upstream_rev}, repo='upstream/')
         self.check_tags(expected={'test_tag': upstream_rev})
+
+    def test_skip_when_tag_exists(self):
+        self.git('tag test_1', 'upstream/')
+        self.ansible.run_playbook(yml="""
+            - hosts: localhost
+              vars:
+                git_tag: test_2
+                skip_if_tag_matching: test_*
+              roles:
+                - create_tag
+        """)
+        rev = self.git_rev_parse('HEAD')
+        self.check_tags(expected={'test_1': rev})
+        self.check_tags(expected={'test_1': rev}, repo='upstream/')
+
+    def test_skip_when_tag_on_old(self):
+        self.git('tag test_1', 'upstream/')
+        upstream_rev = self.git_rev_parse('test_1', 'upstream/')
+        self.dir.write('local/c', 'changed')
+        self.git('commit -m changed .')
+        self.ansible.run_playbook(yml="""
+            - hosts: localhost
+              vars:
+                git_tag: test_2
+                skip_if_tag_matching: test_*
+              roles:
+                - create_tag
+        """)
+        rev = self.git_rev_parse('HEAD')
+        self.check_tags(expected={'test_1': upstream_rev,
+                                  'test_2': rev})
+        self.check_tags(expected={'test_1': upstream_rev,
+                                  'test_2': rev},
+                        repo='upstream/')
