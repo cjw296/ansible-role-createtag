@@ -6,9 +6,9 @@ python: "2.7"
 sudo: false
 
 env:
-  - ANSIBLE_VERSION=1.9.6
-  - ANSIBLE_VERSION=2.0.2.0
-  - ANSIBLE_VERSION=2.1.0.0
+  - ANSIBLE_VERSION=2.1.6.0
+  - ANSIBLE_VERSION=2.2.3.0
+  - ANSIBLE_VERSION=2.3.2.0
 
 addons:
   apt:
