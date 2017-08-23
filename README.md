@@ -1,7 +1,7 @@
 createtag
 =========
 
-A role to create a git tag in a repo and push it to any remotes.
+A role to create a git tag in a repo and push it to the specified remote.
 
 Requirements
 ------------
@@ -12,6 +12,7 @@ Role Variables
 --------------
 
     git_repo_location: the path to the git repo, defaults to '.'
+    git_remote: remote to push to, defaults to 'origin', set to null to not push.
     git_tag: the tag to apply, use templating to make it sensible!
     skip_if_tag_matching: see 'Conditional Tagging' below.
 
@@ -36,7 +37,7 @@ Conditional Tagging
 -------------------
 
 If you have a daily release process that pushes the `HEAD` of a branch to
-a testing environment, you may find that this roles creates a lot of tags
+a testing environment, you may find that this role creates a lot of tags
 on a commit that ends up being `HEAD` for a number of weeks.
 
 To prevent that, you can set `skip_if_tag_matching` to a glob such that

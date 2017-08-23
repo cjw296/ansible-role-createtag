@@ -1,16 +1,9 @@
-- name: Check for remotes
-  command: "git remote"
-  args:
-    warn: false
-    chdir: "{{repo_location}}"
-  register: has_remotes
-
 - name: Fetch existing tags
-  command: "git fetch --tags"
+  command: "git fetch {{git_remote}} --tags"
   args:
     warn: false
-  when: has_remotes.stdout.strip()
     chdir: "{{git_repo_location}}"
+  when: "git_remote != '' and git_remote != None"
 
 - name: Check for existing tag
   command: "git rev-parse --verify -q --short {{git_tag}}"
@@ -53,5 +46,5 @@
   command: "git push --tags"
   args:
     warn: false
-  when: has_remotes.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip()
     chdir: "{{git_repo_location}}"
+  when: git_remote and (existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines))

@@ -20,6 +20,7 @@ class TestRoleNoRemote(GitHelper, TestCase):
         self.ansible.run_playbook(yml="""
             - hosts: localhost
               vars:
+                git_remote:
                 git_tag: test_tag
               roles:
                 - create_tag
@@ -32,6 +33,7 @@ class TestRoleNoRemote(GitHelper, TestCase):
             - hosts: localhost
               vars:
                 env: test
+                git_remote:
                 git_tag: "{{env}}_{{ansible_date_time.date}}"
               roles:
                 - create_tag
@@ -55,6 +57,7 @@ class TestFromOtherDirectory(GitHelper, TestCase):
             - hosts: localhost
               vars:
                 git_tag: test_tag
+                git_remote:
                 git_repo_location: ../local
               roles:
                 - create_tag
