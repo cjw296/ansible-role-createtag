@@ -43,7 +43,7 @@
   when: existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines)
 
 - name: Push tags
-  command: "git push --tags"
+  command: "git push {{git_remote}} tag {{git_tag}}"
   args:
     warn: false
     chdir: "{{git_repo_location}}"

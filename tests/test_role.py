@@ -156,3 +156,16 @@ class TestRoleWithRemote(GitHelper, TestCase):
         self.check_tags(expected={'test_1': upstream_rev,
                                   'test_2': rev},
                         repo='upstream/')
+
+    def test_only_push_specific_tag(self):
+        rev = self.git_rev_parse('HEAD')
+        self.git('tag other')
+        self.ansible.run_playbook(yml="""
+            - hosts: localhost
+              vars:
+                git_tag: test_tag
+              roles:
+                - create_tag
+        """)
+        self.check_tags(expected={'test_tag': rev, 'other': rev})
+        self.check_tags(expected={'test_tag': rev}, repo='upstream/')
