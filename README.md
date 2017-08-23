@@ -15,6 +15,7 @@ Role Variables
     git_remote: remote to push to, defaults to 'origin', set to null to not push.
     git_tag: the tag to apply, use templating to make it sensible!
     skip_if_tag_matching: see 'Conditional Tagging' below.
+    update_git_tag: See 'Updating Tags' below. Defauts to false.
 
 Dependencies
 ------------
@@ -46,11 +47,25 @@ environment.
 
 Modifying the above example, this gives:
 
-
     - hosts: localhost
       vars:
         git_tag: "{{env}}-{{ansible_date_time.date}}"
         skip_if_tag_matching: "{{env}}*"
+      roles:
+        - cjw296.createtag
+
+Updating Tags
+-------------
+
+Sometimes you just want a simple tag marking which commit has been sent to an
+environment, and then have that tag moved each time you do a release.
+
+To achieve this, working with the above example would become:
+
+    - hosts: localhost
+      vars:
+        git_tag: "{{env}}"
+        update_git_tag: true
       roles:
         - cjw296.createtag
 

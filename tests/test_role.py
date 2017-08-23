@@ -169,3 +169,19 @@ class TestRoleWithRemote(GitHelper, TestCase):
         """)
         self.check_tags(expected={'test_tag': rev, 'other': rev})
         self.check_tags(expected={'test_tag': rev}, repo='upstream/')
+
+    def test_update_tag(self):
+        self.git('tag test_tag', 'upstream/')
+        self.dir.write('local/c', 'changed')
+        self.git('commit -m changed .')
+        rev = self.git_rev_parse('HEAD')
+        self.ansible.run_playbook(yml="""
+            - hosts: localhost
+              vars:
+                git_tag: test_tag
+                update_git_tag: true
+              roles:
+                - create_tag
+        """)
+        self.check_tags(expected={'test_tag': rev})
+        self.check_tags(expected={'test_tag': rev}, repo='upstream/')

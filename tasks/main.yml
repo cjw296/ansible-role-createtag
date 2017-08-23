@@ -33,17 +33,17 @@
   debug:
     msg: "current head: {{current_head.stdout}}, existing tag: {{existing_tag.stdout}}"
   failed_when: True
-  when: existing_tag.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip()
+  when: existing_tag.stdout.strip() and existing_tag.stdout.strip() != current_head.stdout.strip() and not update_git_tag
 
 - name: Create Git tag
-  command: "git tag {{git_tag}}"
+  command: "git tag {%if update_git_tag %}--force{% endif %} {{git_tag}}"
   args:
     warn: false
     chdir: "{{git_repo_location}}"
   when: existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines)
 
 - name: Push tags
-  command: "git push {{git_remote}} tag {{git_tag}}"
+  command: "git push {%if update_git_tag %}--force{% endif %} {{git_remote}} tag {{git_tag}}"
   args:
     warn: false
     chdir: "{{git_repo_location}}"
