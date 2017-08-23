@@ -49,13 +49,13 @@ class TestFromOtherDirectory(GitHelper, TestCase):
         self.ansible = AnsibleHelper(self.dir)
         self.ansible.install_role(role_path, 'create_tag')
 
-    def test_specific_repo_location(self):
+    def test_specific_git_repo_location(self):
         self.make_repo_with_content(self.repo)
         self.ansible.run_playbook(yml="""
             - hosts: localhost
               vars:
                 git_tag: test_tag
-                repo_location: ../local
+                git_repo_location: ../local
               roles:
                 - create_tag
         """)

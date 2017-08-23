@@ -11,7 +11,7 @@ Git must be installed on any host that will run this role.
 Role Variables
 --------------
 
-    repo_location: the path to the git repo, defaults to '.'
+    git_repo_location: the path to the git repo, defaults to '.'
     git_tag: the tag to apply, use templating to make it sensible!
     skip_if_tag_matching: see 'Conditional Tagging' below.
 
