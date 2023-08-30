@@ -1,7 +1,6 @@
 - name: Fetch existing tags
   command: "git fetch {{git_remote}} --tags"
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   when: "git_remote != '' and git_remote != None"
 
@@ -9,14 +8,12 @@
   command: "git rev-parse --verify -q --short {{git_tag}}"
   ignore_errors: True
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   register: existing_tag
 
 - name: Check for tag matching pattern
   command: "git describe --match \"{{ skip_if_tag_matching }}\" --tags --exact-match"
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   when: skip_if_tag_matching is defined
   ignore_errors: True
@@ -25,7 +22,6 @@
 - name: Check current HEAD
   command: "git rev-parse --verify -q --short HEAD"
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   register: current_head
 
@@ -38,13 +34,11 @@
 - name: Create Git tag
   command: "git tag {%if update_git_tag %}--force{% endif %} {{git_tag}}"
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   when: existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines)
 
 - name: Push tags
   command: "git push {%if update_git_tag %}--force{% endif %} {{git_remote}} tag {{git_tag}}"
   args:
-    warn: false
     chdir: "{{git_repo_location}}"
   when: git_remote and (existing_tag.stdout.strip() != current_head.stdout.strip() and (matching_tags.get('skipped') or not matching_tags.stdout_lines))
